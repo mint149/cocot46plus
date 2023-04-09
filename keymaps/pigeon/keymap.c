@@ -31,6 +31,14 @@ enum layer_number {
     _Layer6 = 6
 };
 
+// レイヤー定義
+// #define _MAC 0
+// #define _WINDOWS 1
+// #define _LOWER 2
+// #define _RAISE 3
+// #define _ADJUST 4
+// #define _MOUSE 5
+// #define _SCROLL 6
 
 #define LW_MHEN LT(1,KC_T)  // lower
 #define RS_HENK LT(2,KC_T)  // raise
@@ -46,41 +54,63 @@ enum layer_number {
 #define SCRL_IN USER06
 */
 
+// 長いキーをマクロに
+#define SCRLTRG LT(_SCROLL,KC_BTN3)
+#define NOSPACE _______
+#define DELETED _______
+#define NEXTTAB LCTL(KC_TAB)
+#define PREVTAB LCTL(LSFT(KC_TAB))
+#define NEXTXLS LCTL(KC_PGDN)
+#define PREVXLS LCTL(KC_PGUP)
+
+// キーコード定義
+enum custom_keycodes {
+  MAC = SAFE_RANGE,
+  WINDOWS,
+  IMEON,
+  IMEOFF,
+  TGL_JIS
+};
+
+bool ime_off_only = false;
+bool ime_on_only = false;
+bool jis_mode = false;
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_BASE] = LAYOUT(
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
        KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                                          KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      KC_LCTL,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                                          KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, KC_QUOT,
+      KC_LCTL,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                                          KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN,  KC_ENT,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                                          KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, KC_MINS,
+      KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                                          KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, KC_QUOT,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-                        KC_LGUI, DEL_ALT,   LW_MHEN,  KC_SPC, KC_MS_BTN1,             KC_MS_BTN2,  KC_ENT, RS_HENK, KC_BSPC,  KC_ESC,
-                                                                 KC_PGUP, KC_MS_BTN3,  KC_PGDN, XXXXXXX, XXXXXXX, XXXXXXX
+                        DELETED, KC_LGUI,  IMEOFF,  KC_SPC, KC_MS_BTN1,             KC_MS_BTN2,   KC_RALT,   IMEON, DELETED, DELETED,
+                                                                 KC_WH_U, KC_MS_BTN3,  KC_WH_D, XXXXXXX, XXXXXXX, XXXXXXX
                                                             //`--------------'  `--------------'
     ),
   [_LOWER] = LAYOUT(
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-       KC_ESC, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                                       KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
+       KC_ESC, _______,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                                          KC_1,    KC_2,    KC_3,    KC_4,    KC_5,  KC_DEL, 
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      KC_LCTL, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                       KC_LCBR, KC_RCBR, KC_LBRC, KC_RBRC, KC_COLN, KC_DQUO,
+      _______,   KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10,                                          KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______, 
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      KC_LSFT,  KC_GRV, KC_TILD, KC_NUBS, KC_PIPE, XXXXXXX,                                        KC_EQL, KC_PLUS, KC_LABK, KC_RABK, KC_QUES, KC_UNDS,
+      _______,  KC_F11,  KC_F12, _______, _______, _______,                                       KC_MINS, KC_EQL , KC_LBRC, KC_RBRC, KC_BSLS,  KC_GRV,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-                        KC_LGUI, DEL_ALT, KC_TRNS,  KC_SPC,   KC_MS_BTN4,             KC_MS_BTN5,  KC_ENT,   TT(3), KC_BSPC,  KC_ESC,
-                                                                 KC_PGUP, KC_MS_BTN3,  KC_PGDN, XXXXXXX, XXXXXXX, XXXXXXX
+                        _______, _______, _______,  _______,   _______,                 _______,  _______, _______, _______, _______,
+                                                                 _______, _______,  _______, _______, _______, _______
                                                             //`--------------'  `--------------'
     ),
   [_RAISE] = LAYOUT(
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-       KC_ESC,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                                          KC_6,    KC_7,    KC_8,    KC_9,   KC_0,  KC_BSPC,
+      _______, _______, _______, _______, _______, _______,                                       KC_HOME, KC_PGDN, KC_PGUP,  KC_END, _______, KC_DEL , 
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      KC_LCTL,   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                                        KC_APP,   KC_UP,S(KC_R), KC_UNDS, KC_DQUO, KC_COLN,
+      _______, _______,  CPI_SW, SCRL_SW, _______, _______,                                       KC_LEFT, KC_DOWN, KC_UP  ,KC_RIGHT, _______, _______, 
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      KC_LSFT,   KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10,                                       KC_LEFT, KC_DOWN, KC_RGHT,  KC_DOT, KC_SLSH, KC_MINS,
+      _______, _______, _______, _______, _______, _______,                                       KC_MINS, KC_EQL , KC_LBRC, KC_RBRC, KC_BSLS, KC_GRV ,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-                        KC_LGUI, DEL_ALT,   TT(3),  KC_SPC,   KC_MS_BTN4,             KC_MS_BTN5,  KC_ENT, KC_TRNS, KC_BSPC,  KC_ESC,
-                                                                 KC_PGUP, KC_MS_BTN3,  KC_PGDN, XXXXXXX, XXXXXXX, XXXXXXX
+                        _______, _______, _______,  _______,   _______,             _______,  _______, _______, _______,  _______,
+                                                                 _______, _______,  _______, _______, _______, _______
                                                             //`--------------'  `--------------'
     ),
   [_TRACKBALL] = LAYOUT(
@@ -91,8 +121,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
       XXXXXXX, XXXXXXX, RGB_VAD, RGB_SAD, RGB_HUD,RGB_RMOD,                                       SCRL_IN, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-                        KC_LGUI, DEL_ALT, KC_TRNS,  KC_SPC,   KC_MS_BTN1,             KC_MS_BTN2,  KC_ENT, RS_HENK, KC_BSPC,  KC_ESC,
-                                                                 KC_PGUP, KC_MS_BTN3,  KC_PGDN, XXXXXXX, XXXXXXX, XXXXXXX
+                        _______, _______, _______,  _______,   _______,             _______,  _______, _______, _______,  _______,
+                                                                 _______, _______,  _______, _______, _______, _______
                                                             //`--------------'  `--------------'
     ),
   [_Layer4] = LAYOUT(
