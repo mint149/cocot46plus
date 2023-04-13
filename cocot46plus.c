@@ -256,16 +256,16 @@ void oled_write_layer_state(void) {
             oled_write_P(PSTR("Base "), false);
             break;
         case 1:
-            oled_write_P(PSTR("Lower"), false);
+            oled_write_P(PSTR("WIN  "), false);
             break;
         case 2:
-            oled_write_P(PSTR("Raise"), false);
+            oled_write_P(PSTR("Lower"), false);
             break;
         case 3:
-            oled_write_P(PSTR("Mouse"), false);
+            oled_write_P(PSTR("Raise"), false);
             break;
         case 4:
-            oled_write_P(PSTR("L4   "), false);
+            oled_write_P(PSTR("Adjust"), false);
             break;
         case 5:
             oled_write_P(PSTR("L5   "), false);
