@@ -19,18 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include "quantum.h"
 
-
-// Defines names for use in layer keycodes and the keymap
-// enum layer_number {
-//     _BASE = 0,
-//     _LOWER = 1,
-//     _RAISE = 2,
-//     _TRACKBALL = 3,
-//     _Layer4 = 4,
-//     _Layer5 = 5,
-//     _Layer6 = 6
-// };
-
 // レイヤー定義
 #define _MAC 0
 #define _WINDOWS 1
@@ -125,11 +113,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
   [_ADJUST] = LAYOUT(
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, RGB_TOG,                                       SCRL_TO,  CPI_SW, SCRL_SW, ROT_L15, ROT_R15, XXXXXXX,
+      XXXXXXX, XXXXXXX, WINDOWS, XXXXXXX, XXXXXXX, RGB_TOG,                                       SCRL_TO,  CPI_SW, SCRL_SW, ROT_L15, ROT_R15, XXXXXXX,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      XXXXXXX, XXXXXXX, RGB_VAI, RGB_SAI, RGB_HUI, RGB_MOD,                                       SCRL_MO, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      XXXXXXX, XXXXXXX, RGB_VAI, RGB_SAI, RGB_HUI, RGB_MOD,                                       SCRL_MO, TGL_JIS, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      XXXXXXX, XXXXXXX, RGB_VAD, RGB_SAD, RGB_HUD,RGB_RMOD,                                       SCRL_IN, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      XXXXXXX, XXXXXXX, RGB_VAD, RGB_SAD, RGB_HUD,RGB_RMOD,                                       SCRL_IN,     MAC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
                         _______, _______, _______,  _______,   _______,             _______,  _______, _______, _______,  _______,
                                                                  _______, _______,  _______, _______, _______, _______
@@ -220,8 +208,40 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 #ifdef OLED_ENABLE
 bool oled_task_user(void) {
+    // oled_write_layer_state();
     render_logo();
-    oled_write_layer_state();
+
+    oled_write_P(PSTR("Layer:"), false);
+
+    switch (get_highest_layer(layer_state | default_layer_state)) {
+        case _MAC:
+            oled_write_P(PSTR("Mac   "), false);
+            break;
+        case _WINDOWS:
+            oled_write_P(PSTR("Win   "), false);
+            break;
+        case _LOWER:
+            oled_write_P(PSTR("Lower "), false);
+            break;
+        case _RAISE:
+            oled_write_P(PSTR("Raise "), false);
+            break;
+        case _ADJUST:
+            oled_write_P(PSTR("Adjust"), false);
+            break;
+        default:
+            oled_write_P(PSTR("Undef "), false);
+            break;
+    }
+
+    oled_write_P(PSTR(" Mode:"), false);
+
+    if(jis_mode){
+      oled_write_P(PSTR("JIS"), false);
+    }else{
+      oled_write_P(PSTR(" US"), false);
+    }
+
     return false;
 }
 #endif
